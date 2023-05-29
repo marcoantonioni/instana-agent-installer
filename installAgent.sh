@@ -31,6 +31,12 @@ if [[ -z ${CLUSTER_NAME} ]]; then
 fi
 
 
+AGENT_VERSION="2.6.0"
+
+echo "Installing instana agent version ${AGENT_VERSION} fro cluster ${CLUSTER_NAME} pointing to ${INSTANA_ENDPOINT}"
+
+oc new-project instana-agent
+oc project instana-agent
 
 cat << EOF | oc apply --force -f -
 ---
@@ -40,7 +46,7 @@ metadata:
   name: instana-agent
   labels:
     app.kubernetes.io/name: instana-agent
-    app.kubernetes.io/version: 1.2.45
+    app.kubernetes.io/version: ${AGENT_VERSION}
 ---
 apiVersion: v1
 kind: ServiceAccount
@@ -49,7 +55,7 @@ metadata:
   namespace: instana-agent
   labels:
     app.kubernetes.io/name: instana-agent
-    app.kubernetes.io/version: 1.2.45
+    app.kubernetes.io/version: ${AGENT_VERSION}
 ---
 apiVersion: v1
 kind: Secret
@@ -58,7 +64,7 @@ metadata:
   namespace: instana-agent
   labels:
     app.kubernetes.io/name: instana-agent
-    app.kubernetes.io/version: 1.2.45
+    app.kubernetes.io/version: ${AGENT_VERSION}
 type: Opaque
 data:
   key: ${INSTANA_KEY}
@@ -71,7 +77,7 @@ metadata:
   namespace: instana-agent
   labels:
     app.kubernetes.io/name: instana-agent
-    app.kubernetes.io/version: 1.2.45
+    app.kubernetes.io/version: ${AGENT_VERSION}
 data:
   cluster_name: '${CLUSTER_NAME}'
   configuration.yaml: |
@@ -115,7 +121,7 @@ metadata:
   name: instana-agent
   labels:
     app.kubernetes.io/name: instana-agent
-    app.kubernetes.io/version: 1.2.45
+    app.kubernetes.io/version: ${AGENT_VERSION}
 rules:
 - nonResourceURLs:
     - '/version'
@@ -178,7 +184,7 @@ metadata:
   name: instana-agent
   labels:
     app.kubernetes.io/name: instana-agent
-    app.kubernetes.io/version: 1.2.45
+    app.kubernetes.io/version: ${AGENT_VERSION}
 subjects:
 - kind: ServiceAccount
   name: instana-agent
@@ -202,7 +208,7 @@ metadata:
   namespace: instana-agent
   labels:
     app.kubernetes.io/name: instana-agent
-    app.kubernetes.io/version: 1.2.45
+    app.kubernetes.io/version: ${AGENT_VERSION}
 spec:
   selector:
     matchLabels:
@@ -215,7 +221,7 @@ spec:
     metadata:
       labels:
         app.kubernetes.io/name: instana-agent
-        app.kubernetes.io/version: 1.2.45
+        app.kubernetes.io/version: ${AGENT_VERSION}
         instana/agent-mode: 'APM'
       annotations: {}
     spec:
